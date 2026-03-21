@@ -87,6 +87,11 @@ body { font-family:'DM Sans',sans-serif; background:var(--slate-50); color:var(-
 .theme-input { width:100%; padding:11px 14px; border:1px solid var(--slate-200); border-radius:var(--r-md); font-family:'DM Sans',sans-serif; font-size:14px; color:var(--slate-800); background:var(--white); }
 .theme-input:focus { outline:none; border-color:var(--blue-600); }
 
+/* ── MODEL SELECTOR ── */
+.model-opt { flex:1; padding:10px 12px; border:1px solid var(--slate-200); border-radius:var(--r-md); background:var(--white); cursor:pointer; text-align:center; transition:all 0.15s; color:var(--slate-600); }
+.model-opt.selected { border-color:var(--blue-600); background:var(--blue-50); color:var(--blue-800); }
+.model-opt:active { transform:scale(0.97); }
+
 /* ── GENERATE BTN ── */
 .gen-btn { width:calc(100% - 40px); margin:14px 20px 0; padding:15px; background:var(--blue-800); color:white; border:none; border-radius:var(--r-lg); font-family:'DM Sans',sans-serif; font-size:15px; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; box-shadow:var(--sh-md); }
 .gen-btn:active { transform:scale(0.98); }
@@ -220,6 +225,18 @@ body { font-family:'DM Sans',sans-serif; background:var(--slate-50); color:var(-
     <input class="theme-input" id="theme-input" type="text" placeholder="Thème ou question (ex: antibioprophylaxie, choc septique...)">
   </div>
 
+  <!-- Sélecteur de modèle -->
+  <div style="padding:10px 20px 0; display:flex; gap:10px;">
+    <div class="model-opt selected" id="model-haiku" onclick="selectModel('haiku')">
+      <div style="font-size:12px;font-weight:600">⚡ Haiku</div>
+      <div style="font-size:10px;opacity:0.7">~$0.003 · rapide</div>
+    </div>
+    <div class="model-opt" id="model-sonnet" onclick="selectModel('sonnet')">
+      <div style="font-size:12px;font-weight:600">🧠 Sonnet</div>
+      <div style="font-size:10px;opacity:0.7">~$0.04 · précis</div>
+    </div>
+  </div>
+
   <button class="gen-btn" id="gen-btn" onclick="generate()">
     <svg viewBox="0 0 24 24"><path d="M12 2l3 7h7l-6 4 2 7-6-4-6 4 2-7-6-4h7z"/></svg>
     Générer
@@ -301,8 +318,9 @@ body { font-family:'DM Sans',sans-serif; background:var(--slate-50); color:var(-
 
 <script>
 const API = 'https://revision.nanouchou.uk';
-let currentMode = 'cours';
-let currentCat  = '';
+let currentMode  = 'cours';
+let currentCat   = '';
+let currentModel = 'haiku';
 let loaderTimer = null;
 
 const LOADER_STEPS = [
@@ -391,6 +409,12 @@ function goPage(name) {
 }
 
 // ── MODE & CAT ───────────────────────────────────────────────────────────────
+function selectModel(m) {
+  currentModel = m;
+  document.querySelectorAll('.model-opt').forEach(el => el.classList.remove('selected'));
+  document.getElementById('model-' + m).classList.add('selected');
+}
+
 function selectMode(el) {
   document.querySelectorAll('.mode-card').forEach(c=>c.classList.remove('selected'));
   el.classList.add('selected');
@@ -417,7 +441,7 @@ async function generate() {
   showLoader();
 
   try {
-    const body = { mode: currentMode, category: currentCat, theme };
+    const body = { mode: currentMode, category: currentCat, theme, model: currentModel };
     if (currentMode === 'question') body.question = theme;
 
     const r = await fetch(`${API}/query`, {
@@ -438,7 +462,9 @@ async function generate() {
     }
 
     document.getElementById('result-mode').textContent = MODE_LABELS[currentMode] || currentMode;
-    document.getElementById('result-sources').textContent = `${d.chunks_used} passages`;
+    const modelLabel = d.model === 'sonnet' ? '🧠 Sonnet' : '⚡ Haiku';
+    const costLabel  = d.estimated_cost_usd ? ` · $${d.estimated_cost_usd}` : '';
+    document.getElementById('result-sources').textContent = `${d.chunks_used} passages · ${modelLabel}${costLabel}`;
     document.getElementById('result-body').innerHTML = formatContent(d.content);
     document.getElementById('result-wrap').style.display = 'block';
 
