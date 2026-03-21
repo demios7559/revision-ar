@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Révision AR">
+<meta name="theme-color" content="#0d3a5e">
+<title>Révision AR — Anesthésie-Réanimation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --blue-900: #0d3a5e;
+  --blue-800: #1a5f9e;
+  --blue-600: #2979c8;
+  --blue-100: #daeaf7;
+  --blue-50:  #f0f7fd;
+  --slate-800: #1e2a35;
+  --slate-600: #3f5468;
+  --slate-400: #7a93a8;
+  --slate-200: #c8d8e4;
+  --slate-100: #e8f0f5;
+  --slate-50:  #f4f8fb;
+  --white: #ffffff;
+  --green-700: #145e38;
+  --green-600: #1a7a4a;
+  --green-100: #d4f0e2;
+  --amber-600: #a05a10;
+  --amber-100: #fce8cc;
+  --red-600:   #b02020;
+  --red-100:   #fad8d8;
+  --r-sm: 8px; --r-md: 12px; --r-lg: 18px; --r-xl: 24px;
+  --sh-sm: 0 1px 4px rgba(13,58,94,0.08);
+  --sh-md: 0 4px 16px rgba(13,58,94,0.12);
+}
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+body { font-family:'DM Sans',sans-serif; background:var(--slate-50); color:var(--slate-800); min-height:100vh; max-width:520px; margin:0 auto; }
+
+/* ── TOPBAR ── */
+.topbar { background:var(--white); border-bottom:1px solid var(--slate-100); padding:14px 20px; position:sticky; top:0; z-index:100; display:flex; align-items:center; justify-content:space-between; }
+.topbar-title { font-family:'DM Serif Display',serif; font-size:19px; color:var(--blue-900); }
+.topbar-sub { font-size:10px; color:var(--slate-400); font-weight:500; letter-spacing:0.06em; text-transform:uppercase; margin-top:1px; }
+.status-dot { width:8px; height:8px; border-radius:50%; background:#ccc; display:inline-block; margin-right:6px; transition:background 0.3s; }
+.status-dot.ready { background:#4caf50; }
+.status-dot.empty { background:#f0a020; }
+.status-dot.error { background:#e53935; }
+.status-label { font-size:12px; color:var(--slate-400); }
+
+/* ── PAGES ── */
+.page { display:none; padding:0 0 90px; animation:fadeIn 0.2s ease; }
+.page.active { display:block; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+
+/* ── BOTTOM NAV ── */
+.bottom-nav { position:fixed; bottom:0; left:50%; transform:translateX(-50%); width:100%; max-width:520px; background:var(--white); border-top:1px solid var(--slate-100); display:flex; z-index:100; padding-bottom:env(safe-area-inset-bottom); }
+.nav-item { flex:1; display:flex; flex-direction:column; align-items:center; padding:10px 0 8px; border:none; background:none; cursor:pointer; color:var(--slate-400); font-size:10px; font-weight:500; gap:4px; font-family:'DM Sans',sans-serif; }
+.nav-item svg { width:21px; height:21px; stroke:currentColor; fill:none; stroke-width:1.8; }
+.nav-item.active { color:var(--blue-800); }
+
+/* ── HOME ── */
+.hero { background:linear-gradient(135deg,var(--blue-900),var(--blue-800) 60%,var(--blue-600)); padding:24px 20px 28px; color:white; }
+.hero-title { font-family:'DM Serif Display',serif; font-size:24px; margin-bottom:4px; }
+.hero-sub { font-size:13px; opacity:0.75; }
+.hero-stats { display:flex; gap:10px; margin-top:16px; flex-wrap:wrap; }
+.stat-pill { background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.2); border-radius:20px; padding:5px 12px; font-size:12px; font-weight:500; }
+
+.section-title { font-family:'DM Serif Display',serif; font-size:17px; color:var(--slate-800); padding:18px 20px 8px; }
+
+/* ── MODE CARDS ── */
+.mode-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; padding:0 20px; }
+.mode-card { background:var(--white); border:1px solid var(--slate-100); border-radius:var(--r-lg); padding:16px; cursor:pointer; transition:all 0.15s; }
+.mode-card:active { transform:scale(0.97); }
+.mode-card.selected { border-color:var(--blue-600); background:var(--blue-50); }
+.mode-icon { font-size:22px; margin-bottom:8px; }
+.mode-name { font-size:13px; font-weight:600; color:var(--slate-800); margin-bottom:3px; }
+.mode-desc { font-size:11px; color:var(--slate-400); line-height:1.4; }
+
+/* ── CATEGORY CHIPS ── */
+.chip-row { display:flex; flex-wrap:wrap; gap:8px; padding:0 20px; }
+.chip { padding:7px 14px; border-radius:20px; font-size:12px; font-weight:500; border:1px solid var(--slate-200); background:var(--white); color:var(--slate-600); cursor:pointer; transition:all 0.15s; white-space:nowrap; }
+.chip.on { background:var(--blue-50); border-color:var(--blue-600); color:var(--blue-800); }
+
+/* ── THEME INPUT ── */
+.theme-wrap { padding:0 20px; margin-top:12px; }
+.theme-input { width:100%; padding:11px 14px; border:1px solid var(--slate-200); border-radius:var(--r-md); font-family:'DM Sans',sans-serif; font-size:14px; color:var(--slate-800); background:var(--white); }
+.theme-input:focus { outline:none; border-color:var(--blue-600); }
+
+/* ── GENERATE BTN ── */
+.gen-btn { width:calc(100% - 40px); margin:14px 20px 0; padding:15px; background:var(--blue-800); color:white; border:none; border-radius:var(--r-lg); font-family:'DM Sans',sans-serif; font-size:15px; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; box-shadow:var(--sh-md); }
+.gen-btn:active { transform:scale(0.98); }
+.gen-btn:disabled { background:var(--slate-400); pointer-events:none; }
+.gen-btn svg { width:18px; height:18px; stroke:white; fill:none; stroke-width:2; }
+
+/* ── RESULT ── */
+.result-wrap { margin:16px 20px 0; background:var(--white); border:1px solid var(--slate-100); border-radius:var(--r-lg); overflow:hidden; }
+.result-header { padding:12px 16px; background:var(--blue-50); border-bottom:1px solid var(--blue-100); display:flex; align-items:center; justify-content:space-between; }
+.result-mode { font-size:11px; font-weight:600; color:var(--blue-800); text-transform:uppercase; letter-spacing:0.08em; }
+.result-sources { font-size:11px; color:var(--slate-400); }
+.result-body { padding:16px; font-size:13px; line-height:1.75; color:var(--slate-700); white-space:pre-wrap; }
+.result-body strong, .result-body b { color:var(--blue-900); font-weight:600; }
+
+/* ── SUGGESTION ── */
+.suggestion-box { margin:12px 20px 0; background:var(--amber-100); border-radius:var(--r-md); padding:12px 14px; font-size:13px; color:var(--amber-600); line-height:1.6; }
+
+/* ── LOADER ── */
+.loader-overlay { display:none; position:fixed; inset:0; background:rgba(13,58,94,0.55); z-index:300; align-items:center; justify-content:center; }
+.loader-overlay.show { display:flex; }
+.loader-card { background:white; border-radius:var(--r-xl); padding:28px 32px; text-align:center; width:250px; box-shadow:var(--sh-md); }
+.spinner { width:38px; height:38px; border:3px solid var(--blue-100); border-top-color:var(--blue-800); border-radius:50%; animation:spin 0.8s linear infinite; margin:0 auto 12px; }
+@keyframes spin { to{transform:rotate(360deg)} }
+.loader-text { font-size:14px; color:var(--slate-600); }
+.loader-step { font-size:11px; color:var(--slate-400); margin-top:4px; }
+
+/* ── BASE PAGE ── */
+.base-section { padding:16px 20px 0; }
+.base-card { background:var(--white); border:1px solid var(--slate-100); border-radius:var(--r-lg); overflow:hidden; margin-bottom:14px; }
+.base-card-header { padding:12px 16px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--slate-100); }
+.base-card-title { font-size:14px; font-weight:600; color:var(--slate-800); }
+.base-card-val { font-size:13px; color:var(--blue-600); font-weight:500; }
+.cat-row { padding:10px 16px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--slate-100); }
+.cat-row:last-child { border-bottom:none; }
+.cat-name { font-size:13px; color:var(--slate-700); }
+.cat-count { font-size:12px; color:var(--slate-400); }
+.cat-bar-wrap { flex:1; margin:0 12px; height:4px; background:var(--slate-100); border-radius:2px; overflow:hidden; }
+.cat-bar { height:100%; background:var(--blue-600); border-radius:2px; transition:width 0.4s; }
+
+/* ── UPLOAD ZONE ── */
+.drop-zone { border:2px dashed var(--slate-200); border-radius:var(--r-lg); padding:32px 20px; text-align:center; cursor:pointer; transition:all 0.2s; margin-bottom:14px; background:var(--white); }
+.drop-zone.dragover { border-color:var(--blue-600); background:var(--blue-50); }
+.drop-zone-icon { font-size:32px; margin-bottom:8px; }
+.drop-zone-text { font-size:14px; font-weight:500; color:var(--slate-600); margin-bottom:4px; }
+.drop-zone-sub { font-size:12px; color:var(--slate-400); }
+#file-input { display:none; }
+
+/* ── UPLOAD RESULTS ── */
+.upload-result { padding:8px 12px; border-radius:var(--r-sm); font-size:12px; margin-bottom:6px; display:flex; align-items:center; gap:8px; }
+.upload-result.ok { background:var(--green-100); color:var(--green-700); }
+.upload-result.err { background:var(--red-100); color:var(--red-600); }
+.upload-result.warn { background:var(--amber-100); color:var(--amber-600); }
+
+/* ── INDEX BTN ── */
+.index-btn { width:100%; padding:13px; background:var(--blue-900); color:white; border:none; border-radius:var(--r-md); font-family:'DM Sans',sans-serif; font-size:14px; font-weight:600; cursor:pointer; margin-bottom:10px; display:flex; align-items:center; justify-content:center; gap:8px; }
+.index-btn:active { background:var(--blue-800); }
+.index-btn svg { width:16px; height:16px; stroke:white; fill:none; stroke-width:2; }
+
+/* ── DOCS LIST ── */
+.doc-item { padding:10px 16px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--slate-100); }
+.doc-item:last-child { border-bottom:none; }
+.doc-name { font-size:12px; color:var(--slate-700); flex:1; margin-right:8px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.doc-cat { font-size:10px; font-weight:600; padding:2px 7px; border-radius:4px; background:var(--blue-50); color:var(--blue-800); white-space:nowrap; }
+.doc-chunks { font-size:11px; color:var(--slate-400); margin-left:8px; white-space:nowrap; }
+
+/* ── TOAST ── */
+.toast { position:fixed; bottom:90px; left:50%; transform:translateX(-50%); background:var(--slate-800); color:white; padding:10px 18px; border-radius:20px; font-size:13px; font-weight:500; z-index:400; opacity:0; transition:opacity 0.2s; pointer-events:none; white-space:nowrap; }
+.toast.show { opacity:1; }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div>
+    <div class="topbar-title">Révision AR</div>
+    <div class="topbar-sub">Anesthésie · Réanimation</div>
+  </div>
+  <div style="display:flex;align-items:center;gap:6px">
+    <span class="status-dot" id="status-dot"></span>
+    <span class="status-label" id="status-label">...</span>
+  </div>
+</div>
+
+<!-- PAGE RÉVISION -->
+<div id="page-revise" class="page active">
+  <div class="hero">
+    <div class="hero-title">Bonjour, Dr.</div>
+    <div class="hero-sub">Choisissez un mode et un thème pour commencer</div>
+    <div class="hero-stats" id="hero-stats"></div>
+  </div>
+
+  <div class="section-title">Mode de révision</div>
+  <div class="mode-grid">
+    <div class="mode-card selected" data-mode="cours" onclick="selectMode(this)">
+      <div class="mode-icon">📖</div>
+      <div class="mode-name">Cours</div>
+      <div class="mode-desc">10 min de lecture structurée</div>
+    </div>
+    <div class="mode-card" data-mode="quiz" onclick="selectMode(this)">
+      <div class="mode-icon">✏️</div>
+      <div class="mode-name">Quiz</div>
+      <div class="mode-desc">5 questions avec corrections</div>
+    </div>
+    <div class="mode-card" data-mode="cas_clinique" onclick="selectMode(this)">
+      <div class="mode-icon">🏥</div>
+      <div class="mode-name">Cas clinique</div>
+      <div class="mode-desc">Scénario commenté</div>
+    </div>
+    <div class="mode-card" data-mode="question" onclick="selectMode(this)">
+      <div class="mode-icon">💬</div>
+      <div class="mode-name">Question libre</div>
+      <div class="mode-desc">Réponse depuis vos sources</div>
+    </div>
+  </div>
+
+  <div class="section-title" style="margin-top:8px">Catégorie</div>
+  <div class="chip-row" id="cat-chips">
+    <div class="chip on" data-cat="" onclick="selectCat(this)">Toutes</div>
+    <div class="chip" data-cat="infectiologie" onclick="selectCat(this)">Infectiologie</div>
+    <div class="chip" data-cat="respiratoire" onclick="selectCat(this)">Respiratoire</div>
+    <div class="chip" data-cat="hemodynamique" onclick="selectCat(this)">Hémodynamique</div>
+    <div class="chip" data-cat="obstetrique" onclick="selectCat(this)">Obstétrique</div>
+    <div class="chip" data-cat="pediatrie" onclick="selectCat(this)">Pédiatrie</div>
+    <div class="chip" data-cat="pharmacologie" onclick="selectCat(this)">Pharmacologie</div>
+    <div class="chip" data-cat="alr" onclick="selectCat(this)">ALR</div>
+    <div class="chip" data-cat="hemostase" onclick="selectCat(this)">Hémostase</div>
+  </div>
+
+  <div class="theme-wrap">
+    <input class="theme-input" id="theme-input" type="text" placeholder="Thème ou question (ex: antibioprophylaxie, choc septique...)">
+  </div>
+
+  <button class="gen-btn" id="gen-btn" onclick="generate()">
+    <svg viewBox="0 0 24 24"><path d="M12 2l3 7h7l-6 4 2 7-6-4-6 4 2-7-6-4h7z"/></svg>
+    Générer
+  </button>
+
+  <div id="suggestion-box" class="suggestion-box" style="display:none"></div>
+  <div id="result-wrap" class="result-wrap" style="display:none">
+    <div class="result-header">
+      <span class="result-mode" id="result-mode"></span>
+      <span class="result-sources" id="result-sources"></span>
+    </div>
+    <div class="result-body" id="result-body"></div>
+  </div>
+</div>
+
+<!-- PAGE BASE -->
+<div id="page-base" class="page">
+  <div class="base-section">
+
+    <!-- Stats -->
+    <div class="base-card" id="stats-card">
+      <div class="base-card-header">
+        <div class="base-card-title">État de la base</div>
+        <div class="base-card-val" id="total-chunks-val">...</div>
+      </div>
+      <div id="cats-list"></div>
+    </div>
+
+    <!-- Upload drag & drop -->
+    <div class="drop-zone" id="drop-zone" onclick="document.getElementById('file-input').click()">
+      <div class="drop-zone-icon">📄</div>
+      <div class="drop-zone-text">Glissez vos PDFs ici</div>
+      <div class="drop-zone-sub">ou cliquez pour sélectionner</div>
+    </div>
+    <input type="file" id="file-input" accept=".pdf" multiple onchange="handleFiles(this.files)">
+    <div id="upload-results"></div>
+
+    <!-- Indexation bouton -->
+    <button class="index-btn" onclick="reindex()">
+      <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+      Réindexer tous les PDFs du serveur
+    </button>
+
+    <!-- Liste documents -->
+    <div class="base-card">
+      <div class="base-card-header">
+        <div class="base-card-title">Documents indexés</div>
+        <div class="base-card-val" id="docs-count">...</div>
+      </div>
+      <div id="docs-list"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <button class="nav-item active" id="nav-revise" onclick="goPage('revise')">
+    <svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
+    Révision
+  </button>
+  <button class="nav-item" id="nav-base" onclick="goPage('base')">
+    <svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+    Base
+  </button>
+</nav>
+
+<!-- LOADER -->
+<div class="loader-overlay" id="loader">
+  <div class="loader-card">
+    <div class="spinner"></div>
+    <div class="loader-text">Génération en cours…</div>
+    <div class="loader-step" id="loader-step">Recherche dans vos sources</div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+const API = 'https://revision.nanouchou.uk';
+let currentMode = 'cours';
+let currentCat  = '';
+let loaderTimer = null;
+
+const LOADER_STEPS = [
+  'Recherche dans vos sources…',
+  'Analyse des passages pertinents…',
+  'Rédaction du contenu…',
+  'Finalisation…'
+];
+
+const MODE_LABELS = {
+  cours: 'Cours structuré',
+  quiz: 'Quiz',
+  cas_clinique: 'Cas clinique',
+  question: 'Question libre'
+};
+
+// ── INIT ─────────────────────────────────────────────────────────────────────
+async function init() {
+  await loadStatus();
+}
+
+async function loadStatus() {
+  try {
+    const r = await fetch(`${API}/status`);
+    const d = await r.json();
+    const dot = document.getElementById('status-dot');
+    const lbl = document.getElementById('status-label');
+    if (d.status === 'ready') {
+      dot.className = 'status-dot ready';
+      lbl.textContent = `${d.total_chunks.toLocaleString()} chunks`;
+    } else {
+      dot.className = 'status-dot empty';
+      lbl.textContent = 'Base vide';
+    }
+    // Hero stats
+    const stats = document.getElementById('hero-stats');
+    if (d.categories) {
+      const top = Object.entries(d.categories).sort((a,b)=>b[1]-a[1]).slice(0,3);
+      stats.innerHTML = top.map(([k,v]) => `<div class="stat-pill">${k} · ${v}</div>`).join('');
+    }
+    // Base page
+    if (d.total_chunks !== undefined) {
+      document.getElementById('total-chunks-val').textContent = `${d.total_chunks.toLocaleString()} chunks`;
+      renderCats(d.categories || {}, d.total_chunks);
+    }
+  } catch(e) {
+    document.getElementById('status-dot').className = 'status-dot error';
+    document.getElementById('status-label').textContent = 'Hors ligne';
+  }
+}
+
+function renderCats(cats, total) {
+  const list = document.getElementById('cats-list');
+  const sorted = Object.entries(cats).sort((a,b)=>b[1]-a[1]);
+  list.innerHTML = sorted.map(([k,v]) => `
+    <div class="cat-row">
+      <div class="cat-name">${k}</div>
+      <div class="cat-bar-wrap"><div class="cat-bar" style="width:${Math.round(v/total*100)}%"></div></div>
+      <div class="cat-chunks">${v}</div>
+    </div>`).join('');
+}
+
+async function loadDocs() {
+  try {
+    const r = await fetch(`${API}/documents`);
+    const d = await r.json();
+    document.getElementById('docs-count').textContent = `${d.total || 0} fichiers`;
+    const list = document.getElementById('docs-list');
+    if (!d.documents?.length) { list.innerHTML = '<div style="padding:14px 16px;font-size:13px;color:var(--slate-400)">Aucun document</div>'; return; }
+    list.innerHTML = d.documents.map(doc => `
+      <div class="doc-item">
+        <div class="doc-name" title="${doc.source}">${doc.source}</div>
+        <div class="doc-cat">${doc.category}</div>
+        <div class="doc-chunks">${doc.chunks}c</div>
+      </div>`).join('');
+  } catch(e) {}
+}
+
+// ── NAV ──────────────────────────────────────────────────────────────────────
+function goPage(name) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  document.getElementById('nav-'+name).classList.add('active');
+  if (name === 'base') { loadStatus(); loadDocs(); }
+}
+
+// ── MODE & CAT ───────────────────────────────────────────────────────────────
+function selectMode(el) {
+  document.querySelectorAll('.mode-card').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  currentMode = el.dataset.mode;
+  const placeholder = currentMode === 'question'
+    ? 'Votre question (ex: quand utiliser la kétamine en induction ?)'
+    : 'Thème à réviser (ex: choc septique, ALR écho-guidée...)';
+  document.getElementById('theme-input').placeholder = placeholder;
+}
+
+function selectCat(el) {
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on');
+  currentCat = el.dataset.cat;
+}
+
+// ── GENERATE ─────────────────────────────────────────────────────────────────
+async function generate() {
+  const theme = document.getElementById('theme-input').value.trim();
+  if (!theme) { showToast('Entrez un thème ou une question'); return; }
+
+  document.getElementById('result-wrap').style.display = 'none';
+  document.getElementById('suggestion-box').style.display = 'none';
+  showLoader();
+
+  try {
+    const body = { mode: currentMode, category: currentCat, theme };
+    if (currentMode === 'question') body.question = theme;
+
+    const r = await fetch(`${API}/query`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(body)
+    });
+    const d = await r.json();
+    hideLoader();
+
+    if (d.error) { showToast('Erreur : ' + d.error); return; }
+
+    if (d.suggestion && !d.content) {
+      const sb = document.getElementById('suggestion-box');
+      sb.textContent = '💡 ' + d.suggestion;
+      sb.style.display = 'block';
+      return;
+    }
+
+    document.getElementById('result-mode').textContent = MODE_LABELS[currentMode] || currentMode;
+    document.getElementById('result-sources').textContent = `${d.chunks_used} passages`;
+    document.getElementById('result-body').innerHTML = formatContent(d.content);
+    document.getElementById('result-wrap').style.display = 'block';
+
+    // Scroll to result
+    setTimeout(() => document.getElementById('result-wrap').scrollIntoView({behavior:'smooth', block:'start'}), 100);
+
+  } catch(e) {
+    hideLoader();
+    showToast('Erreur réseau');
+  }
+}
+
+function formatContent(text) {
+  return text
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .replace(/\[Source: (.+?)\]/g, '<span style="font-size:11px;color:var(--blue-600);font-weight:600">[Source: $1]</span>')
+    .replace(/\[(.+?\.pdf)\]/g, '<span style="font-size:11px;color:var(--blue-600);font-weight:600">[$1]</span>')
+    .split('\n').join('<br>');
+}
+
+// ── UPLOAD ───────────────────────────────────────────────────────────────────
+const dropZone = document.getElementById('drop-zone');
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault();
+  dropZone.classList.remove('dragover');
+  handleFiles(e.dataTransfer.files);
+});
+
+async function handleFiles(files) {
+  if (!files.length) return;
+  const pdfs = Array.from(files).filter(f => f.name.toLowerCase().endsWith('.pdf'));
+  if (!pdfs.length) { showToast('Sélectionnez des fichiers PDF'); return; }
+
+  showLoader('Upload et indexation en cours…');
+  const fd = new FormData();
+  pdfs.forEach(f => fd.append('files', f));
+
+  try {
+    const r = await fetch(`${API}/upload`, { method:'POST', body:fd });
+    const d = await r.json();
+    hideLoader();
+
+    const container = document.getElementById('upload-results');
+    container.innerHTML = '';
+    d.results.forEach(res => {
+      const div = document.createElement('div');
+      const ok = res.status === 'indexé';
+      const warn = res.status.includes('déjà');
+      div.className = `upload-result ${ok?'ok':warn?'warn':'err'}`;
+      div.textContent = `${ok?'✓':warn?'↩':'✗'} ${res.file} — ${res.status}${res.chunks?' ('+res.chunks+' chunks)':''}`;
+      container.appendChild(div);
+    });
+    await loadStatus();
+    showToast(`${pdfs.length} PDF${pdfs.length>1?'s':''} traité${pdfs.length>1?'s':''}`);
+  } catch(e) {
+    hideLoader();
+    showToast('Erreur upload');
+  }
+}
+
+// ── REINDEX ──────────────────────────────────────────────────────────────────
+async function reindex() {
+  showLoader('Réindexation en cours…');
+  try {
+    const r = await fetch(`${API}/index`, {method:'POST'});
+    const d = await r.json();
+    hideLoader();
+    await loadStatus();
+    await loadDocs();
+    showToast(`${d.indexed} nouveaux PDFs indexés`);
+  } catch(e) {
+    hideLoader();
+    showToast('Erreur réindexation');
+  }
+}
+
+// ── LOADER ───────────────────────────────────────────────────────────────────
+function showLoader(msg) {
+  document.getElementById('loader').classList.add('show');
+  document.getElementById('gen-btn').disabled = true;
+  let i = 0;
+  document.getElementById('loader-step').textContent = msg || LOADER_STEPS[0];
+  if (!msg) {
+    loaderTimer = setInterval(() => {
+      i = (i+1) % LOADER_STEPS.length;
+      document.getElementById('loader-step').textContent = LOADER_STEPS[i];
+    }, 2500);
+  }
+}
+function hideLoader() {
+  document.getElementById('loader').classList.remove('show');
+  document.getElementById('gen-btn').disabled = false;
+  clearInterval(loaderTimer);
+}
+
+// ── TOAST ────────────────────────────────────────────────────────────────────
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+init();
+</script>
+</body>
+</html>
