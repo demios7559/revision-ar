@@ -131,7 +131,36 @@ body { font-family:'DM Sans',sans-serif; background:var(--slate-50); color:var(-
 .cat-bar-wrap { flex:1; margin:0 12px; height:4px; background:var(--slate-100); border-radius:2px; overflow:hidden; }
 .cat-bar { height:100%; background:var(--blue-600); border-radius:2px; transition:width 0.4s; }
 
-/* ── UPLOAD ZONE ── */
+/* ── HISTORY ── */
+.hist-filters { display:flex; gap:8px; padding:12px 20px 0; overflow-x:auto; scrollbar-width:none; }
+.hist-filters::-webkit-scrollbar { display:none; }
+.hist-search { margin:10px 20px 0; position:relative; }
+.hist-search input { width:100%; padding:9px 14px 9px 36px; border:1px solid var(--slate-200); border-radius:var(--r-md); font-family:'DM Sans',sans-serif; font-size:13px; background:var(--white); color:var(--slate-800); }
+.hist-search input:focus { outline:none; border-color:var(--blue-600); }
+.hist-search-icon { position:absolute; left:12px; top:50%; transform:translateY(-50%); font-size:14px; color:var(--slate-400); pointer-events:none; }
+.hist-card { margin:10px 20px 0; background:var(--white); border:1px solid var(--slate-100); border-radius:var(--r-lg); overflow:hidden; cursor:pointer; transition:transform 0.15s; }
+.hist-card:active { transform:scale(0.99); }
+.hist-card-header { padding:12px 14px 8px; display:flex; align-items:flex-start; justify-content:space-between; gap:8px; }
+.hist-card-meta { display:flex; gap:6px; align-items:center; margin-bottom:4px; flex-wrap:wrap; }
+.hist-mode-badge { font-size:10px; font-weight:600; padding:2px 8px; border-radius:4px; background:var(--blue-50); color:var(--blue-800); }
+.hist-date { font-size:11px; color:var(--slate-400); }
+.hist-theme { font-size:13px; font-weight:600; color:var(--slate-800); line-height:1.3; }
+.hist-card-footer { padding:8px 14px; border-top:1px solid var(--slate-100); display:flex; align-items:center; justify-content:space-between; }
+.hist-sources { font-size:11px; color:var(--slate-400); }
+.hist-fav-btn { background:none; border:none; cursor:pointer; font-size:16px; color:var(--slate-300); padding:0; }
+.hist-fav-btn.active { color:#f0a020; }
+.hist-empty { text-align:center; padding:50px 20px; color:var(--slate-400); }
+.hist-empty-icon { font-size:36px; margin-bottom:10px; }
+
+/* ── DETAIL OVERLAY ── */
+.detail-overlay { display:none; position:fixed; inset:0; background:var(--slate-50); z-index:200; overflow-y:auto; animation:slideUp 0.2s ease; }
+.detail-overlay.open { display:block; }
+@keyframes slideUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+.detail-topbar { background:var(--white); padding:12px 16px; display:flex; align-items:center; gap:10px; border-bottom:1px solid var(--slate-100); position:sticky; top:0; z-index:10; }
+.detail-back { background:var(--slate-100); border:none; border-radius:50%; width:34px; height:34px; cursor:pointer; font-size:16px; display:flex; align-items:center; justify-content:center; }
+.detail-title { font-size:14px; font-weight:600; color:var(--slate-800); flex:1; }
+.detail-body { padding:16px 20px; font-size:13px; line-height:1.75; color:var(--slate-700); white-space:pre-wrap; }
+.detail-body strong, .detail-body b { color:var(--blue-900); font-weight:600; }
 .drop-zone { border:2px dashed var(--slate-200); border-radius:var(--r-lg); padding:32px 20px; text-align:center; cursor:pointer; transition:all 0.2s; margin-bottom:14px; background:var(--white); }
 .drop-zone.dragover { border-color:var(--blue-600); background:var(--blue-50); }
 .drop-zone-icon { font-size:32px; margin-bottom:8px; }
@@ -292,11 +321,43 @@ body { font-family:'DM Sans',sans-serif; background:var(--slate-50); color:var(-
   </div>
 </div>
 
-<!-- BOTTOM NAV -->
+<div id="page-history" class="page">
+  <div class="hist-filters" id="hist-filters">
+    <div class="chip on" data-hmode="" onclick="filterHist(this,'mode')">Tous</div>
+    <div class="chip" data-hmode="cours" onclick="filterHist(this,'mode')">Cours</div>
+    <div class="chip" data-hmode="quiz" onclick="filterHist(this,'mode')">Quiz</div>
+    <div class="chip" data-hmode="cas_clinique" onclick="filterHist(this,'mode')">Cas</div>
+    <div class="chip" data-hmode="question" onclick="filterHist(this,'mode')">Questions</div>
+    <div class="chip" data-hfav="1" onclick="filterHist(this,'fav')">⭐ Favoris</div>
+  </div>
+  <div class="hist-search">
+    <span class="hist-search-icon">🔍</span>
+    <input type="text" placeholder="Rechercher..." id="hist-search-input" oninput="searchHist()">
+  </div>
+  <div id="hist-list"></div>
+  <div id="hist-empty" class="hist-empty" style="display:none">
+    <div class="hist-empty-icon">📚</div>
+    <div>Aucun résultat sauvegardé.<br>Générez un cours ou un quiz pour commencer.</div>
+  </div>
+</div>
+
+<!-- DETAIL OVERLAY -->
+<div class="detail-overlay" id="detail-overlay">
+  <div class="detail-topbar">
+    <button class="detail-back" onclick="closeDetail()">←</button>
+    <div class="detail-title" id="detail-title"></div>
+    <button class="hist-fav-btn" id="detail-fav-btn" onclick="toggleFavDetail()">☆</button>
+  </div>
+  <div class="detail-body" id="detail-body"></div>
+</div>
 <nav class="bottom-nav">
   <button class="nav-item active" id="nav-revise" onclick="goPage('revise')">
     <svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
     Révision
+  </button>
+  <button class="nav-item" id="nav-history" onclick="goPage('history')">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    Historique
   </button>
   <button class="nav-item" id="nav-base" onclick="goPage('base')">
     <svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
@@ -406,7 +467,128 @@ function goPage(name) {
   document.getElementById('page-'+name).classList.add('active');
   document.getElementById('nav-'+name).classList.add('active');
   if (name === 'base') { loadStatus(); loadDocs(); }
+  if (name === 'history') { loadHistory(); }
 }
+
+// ── HISTORIQUE ────────────────────────────────────────────────────────────────
+let histMode = '';
+let histFav  = '';
+let currentDetailId = null;
+
+const MODE_ICONS = { cours:'📖', quiz:'✏️', cas_clinique:'🏥', question:'💬' };
+
+async function loadHistory() {
+  try {
+    let url = `${API}/history?`;
+    if (histMode) url += `mode=${histMode}&`;
+    if (histFav)  url += `favorites=1&`;
+    const q = document.getElementById('hist-search-input')?.value.trim();
+    if (q) url += `search=${encodeURIComponent(q)}&`;
+    const r = await fetch(url);
+    const d = await r.json();
+    renderHistory(d.entries || []);
+  } catch(e) { console.error(e); }
+}
+
+function renderHistory(entries) {
+  const list  = document.getElementById('hist-list');
+  const empty = document.getElementById('hist-empty');
+  list.innerHTML = '';
+  if (!entries.length) { empty.style.display='block'; return; }
+  empty.style.display='none';
+  entries.forEach(e => {
+    const div = document.createElement('div');
+    div.className = 'hist-card';
+    div.innerHTML = `
+      <div class="hist-card-header">
+        <div style="flex:1">
+          <div class="hist-card-meta">
+            <span class="hist-mode-badge">${MODE_ICONS[e.mode]||''} ${MODE_LABELS[e.mode]||e.mode}</span>
+            ${e.category ? `<span class="hist-mode-badge" style="background:var(--green-100);color:var(--green-700)">${e.category}</span>` : ''}
+            <span class="hist-date">${e.date}</span>
+          </div>
+          <div class="hist-theme">${e.theme||'Sans titre'}</div>
+        </div>
+      </div>
+      <div class="hist-card-footer">
+        <span class="hist-sources">${(e.sources||[]).length} sources · ${e.model||''}</span>
+        <button class="hist-fav-btn ${e.favorite?'active':''}" onclick="event.stopPropagation();toggleFav('${e.id}',this)">${e.favorite?'★':'☆'}</button>
+      </div>`;
+    div.addEventListener('click', () => openDetail(e));
+    list.appendChild(div);
+  });
+}
+
+function filterHist(el, type) {
+  if (type === 'mode') {
+    document.querySelectorAll('#hist-filters .chip[data-hmode]').forEach(c=>c.classList.remove('on'));
+    el.classList.add('on');
+    histMode = el.dataset.hmode;
+  } else {
+    el.classList.toggle('on');
+    histFav = el.classList.contains('on') ? '1' : '';
+  }
+  loadHistory();
+}
+
+function searchHist() { loadHistory(); }
+
+function openDetail(entry) {
+  currentDetailId = entry.id;
+  document.getElementById('detail-title').textContent = entry.theme || 'Résultat';
+  document.getElementById('detail-fav-btn').textContent = entry.favorite ? '★' : '☆';
+  document.getElementById('detail-fav-btn').style.color = entry.favorite ? '#f0a020' : '#7a93a8';
+  document.getElementById('detail-body').innerHTML = formatContent(entry.content || '');
+  document.getElementById('detail-overlay').classList.add('open');
+}
+
+function closeDetail() {
+  document.getElementById('detail-overlay').classList.remove('open');
+  currentDetailId = null;
+}
+
+async function toggleFav(id, btn) {
+  try {
+    await fetch(`${API}/history/${id}/favorite`, {method:'POST'});
+    const isActive = btn.classList.contains('active');
+    btn.classList.toggle('active');
+    btn.textContent = isActive ? '☆' : '★';
+    if (!isActive) showToast('Ajouté aux favoris');
+  } catch(e) {}
+}
+
+async function toggleFavDetail() {
+  if (!currentDetailId) return;
+  const btn = document.getElementById('detail-fav-btn');
+  try {
+    await fetch(`${API}/history/${currentDetailId}/favorite`, {method:'POST'});
+    const isStar = btn.textContent === '★';
+    btn.textContent = isStar ? '☆' : '★';
+    btn.style.color = isStar ? '#7a93a8' : '#f0a020';
+    if (!isStar) showToast('Ajouté aux favoris');
+    loadHistory();
+  } catch(e) {}
+}
+
+async function saveToHistory(result) {
+  try {
+    await fetch(`${API}/save`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        date: new Date().toLocaleDateString('fr-FR', {weekday:'long', day:'numeric', month:'long'}),
+        mode: result.mode,
+        theme: result.theme,
+        category: result.category,
+        content: result.content,
+        sources: result.sources,
+        model: result.model,
+        cost: result.estimated_cost_usd
+      })
+    });
+  } catch(e) { console.error('Sauvegarde historique échouée:', e); }
+}
+
 
 // ── MODE & CAT ───────────────────────────────────────────────────────────────
 function selectModel(m) {
@@ -467,6 +649,9 @@ async function generate() {
     document.getElementById('result-sources').textContent = `${d.chunks_used} passages · ${modelLabel}${costLabel}`;
     document.getElementById('result-body').innerHTML = formatContent(d.content);
     document.getElementById('result-wrap').style.display = 'block';
+
+    // Sauvegarde automatique dans l'historique
+    await saveToHistory(d);
 
     // Scroll to result
     setTimeout(() => document.getElementById('result-wrap').scrollIntoView({behavior:'smooth', block:'start'}), 100);
