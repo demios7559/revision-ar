@@ -92,6 +92,17 @@ body { font-family:'DM Sans',sans-serif; background:var(--slate-50); color:var(-
 .model-opt.selected { border-color:var(--blue-600); background:var(--blue-50); color:var(--blue-800); }
 .model-opt:active { transform:scale(0.97); }
 
+/* ── ENRICHED TOGGLE ── */
+.enrich-row { padding:10px 20px 0; display:flex; align-items:center; justify-content:space-between; }
+.enrich-label { font-size:12px; color:var(--slate-600); font-weight:500; }
+.enrich-sub { font-size:10px; color:var(--slate-400); margin-top:1px; }
+.toggle { position:relative; width:42px; height:24px; cursor:pointer; flex-shrink:0; }
+.toggle input { display:none; }
+.toggle-track { position:absolute; inset:0; background:var(--slate-200); border-radius:12px; transition:background 0.2s; }
+.toggle input:checked + .toggle-track { background:var(--blue-600); }
+.toggle-thumb { position:absolute; top:2px; left:2px; width:20px; height:20px; background:white; border-radius:50%; box-shadow:var(--sh-sm); transition:transform 0.2s; }
+.toggle input:checked ~ .toggle-thumb { transform:translateX(18px); }
+
 /* ── GENERATE BTN ── */
 .gen-btn { width:calc(100% - 40px); margin:14px 20px 0; padding:15px; background:var(--blue-800); color:white; border:none; border-radius:var(--r-lg); font-family:'DM Sans',sans-serif; font-size:15px; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; box-shadow:var(--sh-md); }
 .gen-btn:active { transform:scale(0.98); }
@@ -258,12 +269,25 @@ body { font-family:'DM Sans',sans-serif; background:var(--slate-50); color:var(-
   <div style="padding:10px 20px 0; display:flex; gap:10px;">
     <div class="model-opt selected" id="model-haiku" onclick="selectModel('haiku')">
       <div style="font-size:12px;font-weight:600">⚡ Haiku</div>
-      <div style="font-size:10px;opacity:0.7">~$0.003 · rapide</div>
+      <div style="font-size:10px;opacity:0.7">~$0.008 · rapide</div>
     </div>
     <div class="model-opt" id="model-sonnet" onclick="selectModel('sonnet')">
       <div style="font-size:12px;font-weight:600">🧠 Sonnet</div>
       <div style="font-size:10px;opacity:0.7">~$0.04 · précis</div>
     </div>
+  </div>
+
+  <!-- Toggle enrichissement -->
+  <div class="enrich-row">
+    <div>
+      <div class="enrich-label">🔄 Enrichissement des sources</div>
+      <div class="enrich-sub">Recherche posologies et protocoles manquants (+~$0.003)</div>
+    </div>
+    <label class="toggle">
+      <input type="checkbox" id="enrich-toggle">
+      <div class="toggle-track"></div>
+      <div class="toggle-thumb"></div>
+    </label>
   </div>
 
   <button class="gen-btn" id="gen-btn" onclick="generate()">
@@ -387,6 +411,7 @@ let loaderTimer = null;
 const LOADER_STEPS = [
   'Recherche dans vos sources…',
   'Analyse des passages pertinents…',
+  'Enrichissement des sources…',
   'Rédaction du contenu…',
   'Finalisation…'
 ];
@@ -623,7 +648,8 @@ async function generate() {
   showLoader();
 
   try {
-    const body = { mode: currentMode, category: currentCat, theme, model: currentModel };
+    const enriched = document.getElementById('enrich-toggle').checked;
+    const body = { mode: currentMode, category: currentCat, theme, model: currentModel, enriched };
     if (currentMode === 'question') body.question = theme;
 
     const r = await fetch(`${API}/query`, {
@@ -646,7 +672,8 @@ async function generate() {
     document.getElementById('result-mode').textContent = MODE_LABELS[currentMode] || currentMode;
     const modelLabel = d.model === 'sonnet' ? '🧠 Sonnet' : '⚡ Haiku';
     const costLabel  = d.estimated_cost_usd ? ` · $${d.estimated_cost_usd}` : '';
-    document.getElementById('result-sources').textContent = `${d.chunks_used} passages · ${modelLabel}${costLabel}`;
+    const enrichLabel = enriched ? ' · 🔄' : '';
+    document.getElementById('result-sources').textContent = `${d.chunks_used} passages · ${modelLabel}${costLabel}${enrichLabel}`;
     document.getElementById('result-body').innerHTML = formatContent(d.content);
     document.getElementById('result-wrap').style.display = 'block';
 
