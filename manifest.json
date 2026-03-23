@@ -1,0 +1,25 @@
+{
+  "name": "Révision AR — Anesthésie-Réanimation",
+  "short_name": "Révision AR",
+  "description": "Révision en anesthésie-réanimation avec RAG",
+  "start_url": "/revision-ar/",
+  "scope": "/revision-ar/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0d3a5e",
+  "theme_color": "#0d3a5e",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
