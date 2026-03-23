@@ -40,7 +40,6 @@
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 body { font-family:'DM Sans',sans-serif; background:var(--slate-50); color:var(--slate-800); min-height:100vh; max-width:520px; margin:0 auto; }
 
-/* ── TOPBAR ── */
 .topbar { background:var(--white); border-bottom:1px solid var(--slate-100); padding:14px 20px; position:sticky; top:0; z-index:100; display:flex; align-items:center; justify-content:space-between; }
 .topbar-title { font-family:'DM Serif Display',serif; font-size:19px; color:var(--blue-900); }
 .topbar-sub { font-size:10px; color:var(--slate-400); font-weight:500; letter-spacing:0.06em; text-transform:uppercase; margin-top:1px; }
@@ -50,18 +49,15 @@ body { font-family:'DM Sans',sans-serif; background:var(--slate-50); color:var(-
 .status-dot.error { background:#e53935; }
 .status-label { font-size:12px; color:var(--slate-400); }
 
-/* ── PAGES ── */
 .page { display:none; padding:0 0 90px; animation:fadeIn 0.2s ease; }
 .page.active { display:block; }
 @keyframes fadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
 
-/* ── BOTTOM NAV ── */
 .bottom-nav { position:fixed; bottom:0; left:50%; transform:translateX(-50%); width:100%; max-width:520px; background:var(--white); border-top:1px solid var(--slate-100); display:flex; z-index:100; padding-bottom:env(safe-area-inset-bottom); }
 .nav-item { flex:1; display:flex; flex-direction:column; align-items:center; padding:10px 0 8px; border:none; background:none; cursor:pointer; color:var(--slate-400); font-size:10px; font-weight:500; gap:4px; font-family:'DM Sans',sans-serif; }
 .nav-item svg { width:21px; height:21px; stroke:currentColor; fill:none; stroke-width:1.8; }
 .nav-item.active { color:var(--blue-800); }
 
-/* ── HOME ── */
 .hero { background:linear-gradient(135deg,var(--blue-900),var(--blue-800) 60%,var(--blue-600)); padding:24px 20px 28px; color:white; }
 .hero-title { font-family:'DM Serif Display',serif; font-size:24px; margin-bottom:4px; }
 .hero-sub { font-size:13px; opacity:0.75; }
@@ -70,7 +66,6 @@ body { font-family:'DM Sans',sans-serif; background:var(--slate-50); color:var(-
 
 .section-title { font-family:'DM Serif Display',serif; font-size:17px; color:var(--slate-800); padding:18px 20px 8px; }
 
-/* ── MODE CARDS ── */
 .mode-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; padding:0 20px; }
 .mode-card { background:var(--white); border:1px solid var(--slate-100); border-radius:var(--r-lg); padding:16px; cursor:pointer; transition:all 0.15s; }
 .mode-card:active { transform:scale(0.97); }
@@ -79,22 +74,18 @@ body { font-family:'DM Sans',sans-serif; background:var(--slate-50); color:var(-
 .mode-name { font-size:13px; font-weight:600; color:var(--slate-800); margin-bottom:3px; }
 .mode-desc { font-size:11px; color:var(--slate-400); line-height:1.4; }
 
-/* ── CATEGORY CHIPS ── */
 .chip-row { display:flex; flex-wrap:wrap; gap:8px; padding:0 20px; }
 .chip { padding:7px 14px; border-radius:20px; font-size:12px; font-weight:500; border:1px solid var(--slate-200); background:var(--white); color:var(--slate-600); cursor:pointer; transition:all 0.15s; white-space:nowrap; }
 .chip.on { background:var(--blue-50); border-color:var(--blue-600); color:var(--blue-800); }
 
-/* ── THEME INPUT ── */
 .theme-wrap { padding:0 20px; margin-top:12px; }
 .theme-input { width:100%; padding:11px 14px; border:1px solid var(--slate-200); border-radius:var(--r-md); font-family:'DM Sans',sans-serif; font-size:14px; color:var(--slate-800); background:var(--white); }
 .theme-input:focus { outline:none; border-color:var(--blue-600); }
 
-/* ── MODEL SELECTOR ── */
 .model-opt { flex:1; padding:10px 12px; border:1px solid var(--slate-200); border-radius:var(--r-md); background:var(--white); cursor:pointer; text-align:center; transition:all 0.15s; color:var(--slate-600); }
 .model-opt.selected { border-color:var(--blue-600); background:var(--blue-50); color:var(--blue-800); }
 .model-opt:active { transform:scale(0.97); }
 
-/* ── ENRICHED TOGGLE ── */
 .enrich-row { padding:10px 20px 0; display:flex; align-items:center; justify-content:space-between; }
 .enrich-label { font-size:12px; color:var(--slate-600); font-weight:500; }
 .enrich-sub { font-size:10px; color:var(--slate-400); margin-top:1px; }
@@ -105,24 +96,21 @@ body { font-family:'DM Sans',sans-serif; background:var(--slate-50); color:var(-
 .toggle-thumb { position:absolute; top:2px; left:2px; width:20px; height:20px; background:white; border-radius:50%; box-shadow:var(--sh-sm); transition:transform 0.2s; }
 .toggle input:checked ~ .toggle-thumb { transform:translateX(18px); }
 
-/* ── GENERATE BTN ── */
 .gen-btn { width:calc(100% - 40px); margin:14px 20px 0; padding:15px; background:var(--blue-800); color:white; border:none; border-radius:var(--r-lg); font-family:'DM Sans',sans-serif; font-size:15px; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; box-shadow:var(--sh-md); }
 .gen-btn:active { transform:scale(0.98); }
 .gen-btn:disabled { background:var(--slate-400); pointer-events:none; }
 .gen-btn svg { width:18px; height:18px; stroke:white; fill:none; stroke-width:2; }
 
-/* ── RESULT ── */
 .result-wrap { margin:16px 20px 0; background:var(--white); border:1px solid var(--slate-100); border-radius:var(--r-lg); overflow:hidden; }
 .result-header { padding:12px 16px; background:var(--blue-50); border-bottom:1px solid var(--blue-100); display:flex; align-items:center; justify-content:space-between; }
 .result-mode { font-size:11px; font-weight:600; color:var(--blue-800); text-transform:uppercase; letter-spacing:0.08em; }
 .result-sources { font-size:11px; color:var(--slate-400); }
 .result-body { padding:16px; font-size:13px; line-height:1.75; color:var(--slate-700); white-space:pre-wrap; }
 .result-body strong, .result-body b { color:var(--blue-900); font-weight:600; }
+.result-body a.src-link { font-size:11px; color:var(--blue-600); font-weight:600; text-decoration:underline; }
 
-/* ── SUGGESTION ── */
 .suggestion-box { margin:12px 20px 0; background:var(--amber-100); border-radius:var(--r-md); padding:12px 14px; font-size:13px; color:var(--amber-600); line-height:1.6; }
 
-/* ── LOADER ── */
 .loader-overlay { display:none; position:fixed; inset:0; background:rgba(13,58,94,0.55); z-index:300; align-items:center; justify-content:center; }
 .loader-overlay.show { display:flex; }
 .loader-card { background:white; border-radius:var(--r-xl); padding:28px 32px; text-align:center; width:250px; box-shadow:var(--sh-md); }
@@ -131,7 +119,6 @@ body { font-family:'DM Sans',sans-serif; background:var(--slate-50); color:var(-
 .loader-text { font-size:14px; color:var(--slate-600); }
 .loader-step { font-size:11px; color:var(--slate-400); margin-top:4px; }
 
-/* ── BASE PAGE ── */
 .base-section { padding:16px 20px 0; }
 .base-card { background:var(--white); border:1px solid var(--slate-100); border-radius:var(--r-lg); overflow:hidden; margin-bottom:14px; }
 .base-card-header { padding:12px 16px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--slate-100); }
@@ -144,7 +131,6 @@ body { font-family:'DM Sans',sans-serif; background:var(--slate-50); color:var(-
 .cat-bar-wrap { flex:1; margin:0 12px; height:4px; background:var(--slate-100); border-radius:2px; overflow:hidden; }
 .cat-bar { height:100%; background:var(--blue-600); border-radius:2px; transition:width 0.4s; }
 
-/* ── HISTORY ── */
 .hist-filters { display:flex; gap:8px; padding:12px 20px 0; overflow-x:auto; scrollbar-width:none; }
 .hist-filters::-webkit-scrollbar { display:none; }
 .hist-search { margin:10px 20px 0; position:relative; }
@@ -165,7 +151,6 @@ body { font-family:'DM Sans',sans-serif; background:var(--slate-50); color:var(-
 .hist-empty { text-align:center; padding:50px 20px; color:var(--slate-400); }
 .hist-empty-icon { font-size:36px; margin-bottom:10px; }
 
-/* ── DETAIL OVERLAY ── */
 .detail-overlay { display:none; position:fixed; inset:0; background:var(--slate-50); z-index:200; overflow-y:auto; animation:slideUp 0.2s ease; }
 .detail-overlay.open { display:block; }
 @keyframes slideUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
@@ -174,6 +159,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--slate-50); color:var(-
 .detail-title { font-size:14px; font-weight:600; color:var(--slate-800); flex:1; }
 .detail-body { padding:16px 20px; font-size:13px; line-height:1.75; color:var(--slate-700); white-space:pre-wrap; }
 .detail-body strong, .detail-body b { color:var(--blue-900); font-weight:600; }
+.detail-body a.src-link { font-size:11px; color:var(--blue-600); font-weight:600; text-decoration:underline; }
 .drop-zone { border:2px dashed var(--slate-200); border-radius:var(--r-lg); padding:32px 20px; text-align:center; cursor:pointer; transition:all 0.2s; margin-bottom:14px; background:var(--white); }
 .drop-zone.dragover { border-color:var(--blue-600); background:var(--blue-50); }
 .drop-zone-icon { font-size:32px; margin-bottom:8px; }
@@ -181,32 +167,35 @@ body { font-family:'DM Sans',sans-serif; background:var(--slate-50); color:var(-
 .drop-zone-sub { font-size:12px; color:var(--slate-400); }
 #file-input { display:none; }
 
-/* ── UPLOAD RESULTS ── */
 .upload-result { padding:8px 12px; border-radius:var(--r-sm); font-size:12px; margin-bottom:6px; display:flex; align-items:center; gap:8px; }
 .upload-result.ok { background:var(--green-100); color:var(--green-700); }
 .upload-result.err { background:var(--red-100); color:var(--red-600); }
 .upload-result.warn { background:var(--amber-100); color:var(--amber-600); }
 
-/* ── INDEX BTN ── */
 .index-btn { width:100%; padding:13px; background:var(--blue-900); color:white; border:none; border-radius:var(--r-md); font-family:'DM Sans',sans-serif; font-size:14px; font-weight:600; cursor:pointer; margin-bottom:10px; display:flex; align-items:center; justify-content:center; gap:8px; }
 .index-btn:active { background:var(--blue-800); }
 .index-btn svg { width:16px; height:16px; stroke:white; fill:none; stroke-width:2; }
 
-/* ── DOCS LIST ── */
 .doc-item { padding:10px 16px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--slate-100); }
 .doc-item:last-child { border-bottom:none; }
 .doc-name { font-size:12px; color:var(--slate-700); flex:1; margin-right:8px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .doc-cat { font-size:10px; font-weight:600; padding:2px 7px; border-radius:4px; background:var(--blue-50); color:var(--blue-800); white-space:nowrap; }
 .doc-chunks { font-size:11px; color:var(--slate-400); margin-left:8px; white-space:nowrap; }
 
-/* ── TOAST ── */
 .toast { position:fixed; bottom:90px; left:50%; transform:translateX(-50%); background:var(--slate-800); color:white; padding:10px 18px; border-radius:20px; font-size:13px; font-weight:500; z-index:400; opacity:0; transition:opacity 0.2s; pointer-events:none; white-space:nowrap; }
 .toast.show { opacity:1; }
+
+/* ── COURS DU JOUR ── */
+.daily-card { margin:16px 20px 0; background:linear-gradient(135deg,#1a5f9e,#2979c8); border-radius:var(--r-lg); padding:18px; color:white; cursor:pointer; transition:transform 0.15s; box-shadow:var(--sh-md); }
+.daily-card:active { transform:scale(0.98); }
+.daily-tag { font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; opacity:0.75; margin-bottom:6px; }
+.daily-theme { font-family:'DM Serif Display',serif; font-size:18px; margin-bottom:4px; }
+.daily-cat { font-size:11px; opacity:0.7; }
+.daily-btn { margin-top:12px; background:rgba(255,255,255,0.2); border:1px solid rgba(255,255,255,0.3); border-radius:20px; padding:7px 16px; font-size:12px; font-weight:600; color:white; display:inline-flex; align-items:center; gap:6px; }
 </style>
 </head>
 <body>
 
-<!-- TOPBAR -->
 <div class="topbar">
   <div>
     <div class="topbar-title">Révision AR</div>
@@ -218,12 +207,18 @@ body { font-family:'DM Sans',sans-serif; background:var(--slate-50); color:var(-
   </div>
 </div>
 
-<!-- PAGE RÉVISION -->
 <div id="page-revise" class="page active">
   <div class="hero">
     <div class="hero-title">Bonjour, Dr.</div>
     <div class="hero-sub">Choisissez un mode et un thème pour commencer</div>
     <div class="hero-stats" id="hero-stats"></div>
+  </div>
+
+  <div class="daily-card" id="daily-card" onclick="startDaily()">
+    <div class="daily-tag">📅 Cours du jour</div>
+    <div class="daily-theme" id="daily-theme"></div>
+    <div class="daily-cat" id="daily-cat"></div>
+    <div class="daily-btn">⚡ Réviser maintenant</div>
   </div>
 
   <div class="section-title">Mode de révision</div>
@@ -267,7 +262,6 @@ body { font-family:'DM Sans',sans-serif; background:var(--slate-50); color:var(-
     <input class="theme-input" id="theme-input" type="text" placeholder="Thème ou question (ex: antibioprophylaxie, choc septique...)">
   </div>
 
-  <!-- Sélecteur de modèle -->
   <div style="padding:10px 20px 0; display:flex; gap:10px;">
     <div class="model-opt selected" id="model-haiku" onclick="selectModel('haiku')">
       <div style="font-size:12px;font-weight:600">⚡ Haiku</div>
@@ -279,7 +273,6 @@ body { font-family:'DM Sans',sans-serif; background:var(--slate-50); color:var(-
     </div>
   </div>
 
-  <!-- Toggle enrichissement -->
   <div class="enrich-row">
     <div>
       <div class="enrich-label">🔄 Enrichissement des sources</div>
@@ -307,11 +300,8 @@ body { font-family:'DM Sans',sans-serif; background:var(--slate-50); color:var(-
   </div>
 </div>
 
-<!-- PAGE BASE -->
 <div id="page-base" class="page">
   <div class="base-section">
-
-    <!-- Stats -->
     <div class="base-card" id="stats-card">
       <div class="base-card-header">
         <div class="base-card-title">État de la base</div>
@@ -319,8 +309,6 @@ body { font-family:'DM Sans',sans-serif; background:var(--slate-50); color:var(-
       </div>
       <div id="cats-list"></div>
     </div>
-
-    <!-- Upload drag & drop -->
     <div class="drop-zone" id="drop-zone" onclick="document.getElementById('file-input').click()">
       <div class="drop-zone-icon">📄</div>
       <div class="drop-zone-text">Glissez vos PDFs ici</div>
@@ -328,14 +316,10 @@ body { font-family:'DM Sans',sans-serif; background:var(--slate-50); color:var(-
     </div>
     <input type="file" id="file-input" accept=".pdf" multiple onchange="handleFiles(this.files)">
     <div id="upload-results"></div>
-
-    <!-- Indexation bouton -->
     <button class="index-btn" onclick="reindex()">
       <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
       Réindexer tous les PDFs du serveur
     </button>
-
-    <!-- Liste documents -->
     <div class="base-card">
       <div class="base-card-header">
         <div class="base-card-title">Documents indexés</div>
@@ -343,7 +327,6 @@ body { font-family:'DM Sans',sans-serif; background:var(--slate-50); color:var(-
       </div>
       <div id="docs-list"></div>
     </div>
-
   </div>
 </div>
 
@@ -367,7 +350,6 @@ body { font-family:'DM Sans',sans-serif; background:var(--slate-50); color:var(-
   </div>
 </div>
 
-<!-- DETAIL OVERLAY -->
 <div class="detail-overlay" id="detail-overlay">
   <div class="detail-topbar">
     <button class="detail-back" onclick="closeDetail()">←</button>
@@ -376,6 +358,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--slate-50); color:var(-
   </div>
   <div class="detail-body" id="detail-body"></div>
 </div>
+
 <nav class="bottom-nav">
   <button class="nav-item active" id="nav-revise" onclick="goPage('revise')">
     <svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
@@ -391,7 +374,6 @@ body { font-family:'DM Sans',sans-serif; background:var(--slate-50); color:var(-
   </button>
 </nav>
 
-<!-- LOADER -->
 <div class="loader-overlay" id="loader">
   <div class="loader-card">
     <div class="spinner"></div>
@@ -400,7 +382,6 @@ body { font-family:'DM Sans',sans-serif; background:var(--slate-50); color:var(-
   </div>
 </div>
 
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
 <script>
@@ -424,15 +405,105 @@ const MODE_LABELS = {
   cas_clinique: 'Cas clinique',
   question: 'Question libre'
 };
-  
+
 // ── PWA ──────────────────────────────────────────────────────────────────────
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('sw.js');
 }
 
+// ── COURS DU JOUR ────────────────────────────────────────────────────────────
+const DAILY_TOPICS = [
+  { theme: "Choc septique : diagnostic et prise en charge", cat: "infectiologie" },
+  { theme: "Intubation en séquence rapide", cat: "respiratoire" },
+  { theme: "Pré-éclampsie sévère", cat: "obstetrique" },
+  { theme: "Anesthésie pour césarienne en urgence", cat: "obstetrique" },
+  { theme: "Rachianesthésie : indications et complications", cat: "alr" },
+  { theme: "Bloc interscalénique écho-guidé", cat: "alr" },
+  { theme: "Antibioprophylaxie chirurgicale", cat: "infectiologie" },
+  { theme: "Pharmacologie du propofol", cat: "pharmacologie" },
+  { theme: "Curares : monitorage et antagonisation", cat: "pharmacologie" },
+  { theme: "Morphiniques en anesthésie", cat: "pharmacologie" },
+  { theme: "Ventilation protectrice en réanimation", cat: "respiratoire" },
+  { theme: "SDRA : diagnostic et prise en charge", cat: "respiratoire" },
+  { theme: "Sevrage de la ventilation mécanique", cat: "respiratoire" },
+  { theme: "Fibrillation atriale périopératoire", cat: "hemodynamique" },
+  { theme: "Choc cardiogénique", cat: "hemodynamique" },
+  { theme: "Rétrécissement aortique serré et anesthésie", cat: "hemodynamique" },
+  { theme: "Monitorage hémodynamique invasif", cat: "hemodynamique" },
+  { theme: "Remplissage vasculaire : cristalloïdes vs colloïdes", cat: "hemodynamique" },
+  { theme: "Noradrénaline et vasopresseurs", cat: "pharmacologie" },
+  { theme: "Hyperkaliémie en réanimation", cat: "pharmacologie" },
+  { theme: "Hypokaliémie : diagnostic et traitement", cat: "pharmacologie" },
+  { theme: "Acidose métabolique en réanimation", cat: "hemodynamique" },
+  { theme: "Insuffisance rénale aiguë et EER", cat: "hemodynamique" },
+  { theme: "Transfusion en périopératoire", cat: "hemostase" },
+  { theme: "Gestion des anticoagulants en périopératoire", cat: "hemostase" },
+  { theme: "CIVD : diagnostic et prise en charge", cat: "hemostase" },
+  { theme: "Hémorragie du post-partum", cat: "obstetrique" },
+  { theme: "Anesthésie de l'enfant : particularités", cat: "pediatrie" },
+  { theme: "Laryngospasme chez l'enfant", cat: "pediatrie" },
+  { theme: "Traumatisme crânien grave", cat: "hemodynamique" },
+  { theme: "État de mal épileptique", cat: "pharmacologie" },
+  { theme: "Sédation en réanimation", cat: "pharmacologie" },
+  { theme: "Pneumonie associée à la ventilation mécanique", cat: "infectiologie" },
+  { theme: "Infections urinaires nosocomiales en réanimation", cat: "infectiologie" },
+  { theme: "Choc anaphylactique peropératoire", cat: "pharmacologie" },
+  { theme: "Hyperthermie maligne", cat: "pharmacologie" },
+  { theme: "Embolie pulmonaire périopératoire", cat: "hemostase" },
+  { theme: "Anesthésie pour chirurgie bariatrique", cat: "hemodynamique" },
+  { theme: "Anesthésie du patient coronarien", cat: "hemodynamique" },
+  { theme: "Insuffisance hépatique aiguë en réanimation", cat: "hemodynamique" },
+  { theme: "Nutrition en réanimation", cat: "hemodynamique" },
+  { theme: "Analgésie péridurale thoracique", cat: "alr" },
+  { theme: "TAP bloc et bloc de la paroi abdominale", cat: "alr" },
+  { theme: "Bloc fémoral et canal adducteur", cat: "alr" },
+  { theme: "Kétamine : utilisations en anesthésie", cat: "pharmacologie" },
+  { theme: "Dexmédétomidine en réanimation", cat: "pharmacologie" },
+  { theme: "Gestion des voies aériennes difficiles", cat: "respiratoire" },
+  { theme: "Asthme aigu grave", cat: "respiratoire" },
+  { theme: "Décompensation de BPCO", cat: "respiratoire" },
+  { theme: "Oxygénothérapie haut débit nasal", cat: "respiratoire" },
+  { theme: "Arrêt cardiaque : réanimation cardiopulmonaire", cat: "hemodynamique" },
+  { theme: "Syndrome coronarien aigu périopératoire", cat: "hemodynamique" },
+  { theme: "Thrombopénie en réanimation", cat: "hemostase" },
+  { theme: "Antibiothérapie des infections intra-abdominales", cat: "infectiologie" },
+  { theme: "Méningite bactérienne en réanimation", cat: "infectiologie" },
+  { theme: "Paludisme grave", cat: "infectiologie" },
+  { theme: "Guillain-Barré en réanimation", cat: "hemodynamique" },
+  { theme: "Myasthénie et anesthésie", cat: "pharmacologie" },
+  { theme: "Diabète et anesthésie : gestion périopératoire", cat: "pharmacologie" },
+  { theme: "Éclampsie : prise en charge en urgence", cat: "obstetrique" },
+];
+
+function getDailyTopic() {
+  const today = new Date();
+  const dayOfYear = Math.floor((today - new Date(today.getFullYear(),0,0)) / 86400000);
+  return DAILY_TOPICS[dayOfYear % DAILY_TOPICS.length];
+}
+
+function initDaily() {
+  const topic = getDailyTopic();
+  document.getElementById('daily-theme').textContent = topic.theme;
+  document.getElementById('daily-cat').textContent = topic.cat.charAt(0).toUpperCase() + topic.cat.slice(1);
+}
+
+function startDaily() {
+  const topic = getDailyTopic();
+  document.querySelectorAll('.mode-card').forEach(c => c.classList.remove('selected'));
+  document.querySelector('[data-mode="cours"]').classList.add('selected');
+  currentMode = 'cours';
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('on'));
+  const catChip = document.querySelector('.chip[data-cat="' + topic.cat + '"]');
+  if (catChip) catChip.classList.add('on');
+  currentCat = topic.cat;
+  document.getElementById('theme-input').value = topic.theme;
+  generate();
+}
+
 // ── INIT ─────────────────────────────────────────────────────────────────────
 async function init() {
   await loadStatus();
+  initDaily();
 }
 
 async function loadStatus() {
@@ -448,13 +519,11 @@ async function loadStatus() {
       dot.className = 'status-dot empty';
       lbl.textContent = 'Base vide';
     }
-    // Hero stats
     const stats = document.getElementById('hero-stats');
     if (d.categories) {
       const top = Object.entries(d.categories).sort((a,b)=>b[1]-a[1]).slice(0,3);
       stats.innerHTML = top.map(([k,v]) => `<div class="stat-pill">${k} · ${v}</div>`).join('');
     }
-    // Base page
     if (d.total_chunks !== undefined) {
       document.getElementById('total-chunks-val').textContent = `${d.total_chunks.toLocaleString()} chunks`;
       renderCats(d.categories || {}, d.total_chunks);
@@ -492,7 +561,6 @@ async function loadDocs() {
   } catch(e) {}
 }
 
-// ── NAV ──────────────────────────────────────────────────────────────────────
 function goPage(name) {
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
@@ -502,11 +570,9 @@ function goPage(name) {
   if (name === 'history') { loadHistory(); }
 }
 
-// ── HISTORIQUE ────────────────────────────────────────────────────────────────
 let histMode = '';
 let histFav  = '';
 let currentDetailId = null;
-
 const MODE_ICONS = { cours:'📖', quiz:'✏️', cas_clinique:'🏥', question:'💬' };
 
 async function loadHistory() {
@@ -621,8 +687,6 @@ async function saveToHistory(result) {
   } catch(e) { console.error('Sauvegarde historique échouée:', e); }
 }
 
-
-// ── MODE & CAT ───────────────────────────────────────────────────────────────
 function selectModel(m) {
   currentModel = m;
   document.querySelectorAll('.model-opt').forEach(el => el.classList.remove('selected'));
@@ -645,7 +709,6 @@ function selectCat(el) {
   currentCat = el.dataset.cat;
 }
 
-// ── GENERATE ─────────────────────────────────────────────────────────────────
 async function generate() {
   const theme = document.getElementById('theme-input').value.trim();
   if (!theme) { showToast('Entrez un thème ou une question'); return; }
@@ -684,10 +747,7 @@ async function generate() {
     document.getElementById('result-body').innerHTML = formatContent(d.content);
     document.getElementById('result-wrap').style.display = 'block';
 
-    // Sauvegarde automatique dans l'historique
     await saveToHistory(d);
-
-    // Scroll to result
     setTimeout(() => document.getElementById('result-wrap').scrollIntoView({behavior:'smooth', block:'start'}), 100);
 
   } catch(e) {
@@ -700,12 +760,11 @@ function formatContent(text) {
   return text
     .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
     .replace(/\*(.+?)\*/g, '<em>$1</em>')
-    .replace(/\[Source: (.+?\.pdf)\]/g, '<a href="' + API + '/pdf/$1" target="_blank" style="font-size:11px;color:var(--blue-600);font-weight:600;text-decoration:underline">[Source: $1]</a>')
-    .replace(/\[(.+?\.pdf)\]/g, '<a href="' + API + '/pdf/$1" target="_blank" style="font-size:11px;color:var(--blue-600);font-weight:600;text-decoration:underline">[$1]</a>')
+    .replace(/\[Source:\s*(.+?\.pdf)\]/g, '<a class="src-link" href="' + API + '/pdf/$1" target="_blank">📄 $1</a>')
+    .replace(/\[(.+?\.pdf)\]/g, '<a class="src-link" href="' + API + '/pdf/$1" target="_blank">📄 $1</a>')
     .split('\n').join('<br>');
 }
 
-// ── UPLOAD ───────────────────────────────────────────────────────────────────
 const dropZone = document.getElementById('drop-zone');
 dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
 dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
@@ -747,7 +806,6 @@ async function handleFiles(files) {
   }
 }
 
-// ── REINDEX ──────────────────────────────────────────────────────────────────
 async function reindex() {
   showLoader('Réindexation en cours…');
   try {
@@ -763,7 +821,6 @@ async function reindex() {
   }
 }
 
-// ── LOADER ───────────────────────────────────────────────────────────────────
 function showLoader(msg) {
   document.getElementById('loader').classList.add('show');
   document.getElementById('gen-btn').disabled = true;
@@ -782,7 +839,6 @@ function hideLoader() {
   clearInterval(loaderTimer);
 }
 
-// ── TOAST ────────────────────────────────────────────────────────────────────
 function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg; t.classList.add('show');
