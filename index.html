@@ -7,6 +7,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Révision AR">
 <meta name="theme-color" content="#0d3a5e">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
 <title>Révision AR — Anesthésie-Réanimation</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -422,6 +424,11 @@ const MODE_LABELS = {
   cas_clinique: 'Cas clinique',
   question: 'Question libre'
 };
+  
+// ── PWA ──────────────────────────────────────────────────────────────────────
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js');
+}
 
 // ── INIT ─────────────────────────────────────────────────────────────────────
 async function init() {
