@@ -693,8 +693,8 @@ function formatContent(text) {
   return text
     .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
     .replace(/\*(.+?)\*/g, '<em>$1</em>')
-    .replace(/\[Source: (.+?)\]/g, '<span style="font-size:11px;color:var(--blue-600);font-weight:600">[Source: $1]</span>')
-    .replace(/\[(.+?\.pdf)\]/g, '<span style="font-size:11px;color:var(--blue-600);font-weight:600">[$1]</span>')
+    .replace(/\[Source: (.+?\.pdf)\]/g, '<a href="' + API + '/pdf/$1" target="_blank" style="font-size:11px;color:var(--blue-600);font-weight:600;text-decoration:underline">[Source: $1]</a>')
+    .replace(/\[(.+?\.pdf)\]/g, '<a href="' + API + '/pdf/$1" target="_blank" style="font-size:11px;color:var(--blue-600);font-weight:600;text-decoration:underline">[$1]</a>')
     .split('\n').join('<br>');
 }
 
