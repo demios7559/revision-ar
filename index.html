@@ -111,6 +111,15 @@ body { font-family:'DM Sans',sans-serif; background:var(--slate-50); color:var(-
 
 .suggestion-box { margin:12px 20px 0; background:var(--amber-100); border-radius:var(--r-md); padding:12px 14px; font-size:13px; color:var(--amber-600); line-height:1.6; }
 
+/* ── FOLLOWUP ── */
+.followup-wrap { margin:10px 20px 0; border:1px solid var(--blue-100); border-radius:var(--r-lg); background:var(--blue-50); overflow:hidden; }
+.followup-label { font-size:11px; font-weight:600; color:var(--blue-800); text-transform:uppercase; letter-spacing:0.08em; padding:10px 14px 6px; }
+.followup-row { display:flex; gap:8px; padding:0 10px 10px; }
+.followup-input { flex:1; padding:9px 12px; border:1px solid var(--slate-200); border-radius:var(--r-md); font-family:'DM Sans',sans-serif; font-size:13px; color:var(--slate-800); background:var(--white); }
+.followup-input:focus { outline:none; border-color:var(--blue-600); }
+.followup-btn { padding:9px 14px; background:var(--blue-800); color:white; border:none; border-radius:var(--r-md); font-size:14px; font-weight:600; cursor:pointer; }
+.followup-btn:active { transform:scale(0.97); }
+
 .loader-overlay { display:none; position:fixed; inset:0; background:rgba(13,58,94,0.55); z-index:300; align-items:center; justify-content:center; }
 .loader-overlay.show { display:flex; }
 .loader-card { background:white; border-radius:var(--r-xl); padding:28px 32px; text-align:center; width:250px; box-shadow:var(--sh-md); }
@@ -291,12 +300,23 @@ body { font-family:'DM Sans',sans-serif; background:var(--slate-50); color:var(-
   </button>
 
   <div id="suggestion-box" class="suggestion-box" style="display:none"></div>
+
   <div id="result-wrap" class="result-wrap" style="display:none">
     <div class="result-header">
       <span class="result-mode" id="result-mode"></span>
       <span class="result-sources" id="result-sources"></span>
     </div>
     <div class="result-body" id="result-body"></div>
+  </div>
+
+  <div id="followup-wrap" class="followup-wrap" style="display:none">
+    <div class="followup-label">💬 Poser une question sur ce contenu</div>
+    <div class="followup-row">
+      <input class="followup-input" id="followup-input" type="text"
+        placeholder="Ex: quelle est la dose de noradrénaline ?"
+        onkeydown="if(event.key==='Enter') submitFollowUp()">
+      <button class="followup-btn" onclick="submitFollowUp()">→</button>
+    </div>
   </div>
 </div>
 
@@ -389,6 +409,7 @@ const API = 'https://revision.nanouchou.uk';
 let currentMode  = 'cours';
 let currentCat   = '';
 let currentModel = 'haiku';
+let currentCourseContent = '';
 let loaderTimer = null;
 
 const LOADER_STEPS = [
@@ -715,6 +736,8 @@ async function generate() {
 
   document.getElementById('result-wrap').style.display = 'none';
   document.getElementById('suggestion-box').style.display = 'none';
+  document.getElementById('followup-wrap').style.display = 'none';
+  currentCourseContent = '';
   showLoader();
 
   try {
@@ -747,9 +770,50 @@ async function generate() {
     document.getElementById('result-body').innerHTML = formatContent(d.content);
     document.getElementById('result-wrap').style.display = 'block';
 
+    if (currentMode === 'cours' || currentMode === 'question') {
+      currentCourseContent = d.content;
+      document.getElementById('followup-input').value = '';
+      document.getElementById('followup-wrap').style.display = 'block';
+    }
+
     await saveToHistory(d);
     setTimeout(() => document.getElementById('result-wrap').scrollIntoView({behavior:'smooth', block:'start'}), 100);
 
+  } catch(e) {
+    hideLoader();
+    showToast('Erreur réseau');
+  }
+}
+
+async function submitFollowUp() {
+  const q = document.getElementById('followup-input').value.trim();
+  if (!q || !currentCourseContent) return;
+
+  showLoader('Question de suivi…');
+  try {
+    const r = await fetch(`${API}/followup`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        question: q,
+        course_content: currentCourseContent,
+        theme: document.getElementById('theme-input').value.trim(),
+        category: currentCat,
+        model: currentModel
+      })
+    });
+    const d = await r.json();
+    hideLoader();
+    if (d.error) { showToast('Erreur : ' + d.error); return; }
+
+    const cacheLabel = d.cache_hit ? ' · ⚡ cache' : '';
+    const costLabel  = d.estimated_cost_usd ? ` · $${d.estimated_cost_usd}` : '';
+    document.getElementById('result-mode').textContent = '💬 Réponse';
+    document.getElementById('result-sources').textContent =
+      `${d.extra_sources?.length || 0} sources${costLabel}${cacheLabel}`;
+    document.getElementById('result-body').innerHTML = formatContent(d.answer);
+    document.getElementById('followup-input').value = '';
+    setTimeout(() => document.getElementById('result-wrap').scrollIntoView({behavior:'smooth', block:'start'}), 100);
   } catch(e) {
     hideLoader();
     showToast('Erreur réseau');
